@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model GeneralQ {
+  id        String    @id @default(uuid())
+  age       Int
+  sex       String
+  selfAss   String
+  study     String
+  q1        Int
+  q2        Int
+  q3        Int
+  q4        Int
+  q5        Int
+  q6        Int
+  q7        Int
+  q8        Int
+  q9        Int
+  qAnswer   Float
+  zeitdruck Boolean
+  hinweis   Boolean
+  Cookies   Cookies[]
+}
+
+model Cookies {
+  cookiename CookieType
+  agree      DateTime?
+  decline    DateTime?
+  change     DateTime?
+  startTime  DateTime?
+  endTime    DateTime?
+  generalQId String
+  general    GeneralQ   @relation(fields: [generalQId], references: [id])
+
+  @@id([generalQId, cookiename])
+}
+
+enum CookieType {
+  TRACKMATE
+  RAWETC
+  TRIPOGAMES
+}

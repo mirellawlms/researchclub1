@@ -1,101 +1,271 @@
-import Image from "next/image";
+"use client";
+import { log } from "console";
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
+import { mitZeitdruck, submit } from "./actions";
 
-export default function Home() {
+interface FormData {
+  alter: string;
+  geschlecht: string;
+  studiengang: string;
+  technischeAffinitaet: string;
+  q1_1: string;
+  q1_2: string;
+  q1_3: string;
+  q1_4: string;
+  q1_5: string;
+  q1_6: string;
+  q1_7: string;
+  q1_8: string;
+  q1_9: string;
+}
+
+const questions = [
+  "Ich beschäftige mich gern genauer mit technischen Systemen.",
+  "Ich probiere gern die Funktionen neuer technischer Systeme aus.",
+  "In erster Linie beschäftige ich mich mit technischen Systemen, weil ich muss.",
+  "Wenn ich ein neues technisches System vor mir habe, probiere ich es intensiv aus.",
+  "Ich verbringe sehr gern Zeit mit dem Kennenlernen eines neuen technischen Systems.",
+  "Es genügt mir, dass ein technisches System funktioniert, mir ist es egal, wie oder warum.",
+  "Ich versuche zu verstehen, wie ein technisches System genau funktioniert.",
+  "Es genügt mir, die Grundfunktionen eines technischen Systems zu kennen.",
+  "Ich versuche, die Möglichkeiten eines technischen Systems vollständig auszunutzen.",
+];
+
+const inverted = [false, false, true, false, false, true, false, false, true];
+
+const WelcomePage = () => {
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors, isValid },
+  } = useForm<FormData>({
+    mode: "onChange", // Validate fields as user interacts
+    defaultValues: {
+      alter: "",
+      geschlecht: "",
+      studiengang: "",
+      technischeAffinitaet: "",
+      q1_1: "",
+      q1_2: "",
+      q1_3: "",
+      q1_4: "",
+      q1_5: "",
+      q1_6: "",
+      q1_7: "",
+      q1_8: "",
+      q1_9: "",
+    },
+  });
+
+  const onSubmit = async (data: FormData) => {
+    const zeitdruck = await mitZeitdruck();
+    const responses = await submit({
+      age: Number(data.alter),
+      sex: data.geschlecht,
+      selfAss: data.technischeAffinitaet,
+      study: data.studiengang,
+      q1: Number(data.q1_1),
+      q2: Number(data.q1_2),
+      q3: Number(data.q1_3),
+      q4: Number(data.q1_4),
+      q5: Number(data.q1_5),
+      q6: Number(data.q1_6),
+      q7: Number(data.q1_7),
+      q8: Number(data.q1_8),
+      q9: Number(data.q1_9),
+      qAnswer: 0,
+      zeitdruck: zeitdruck,
+      hinweis: false,
+    });
+    localStorage.setItem("generalQID", responses.id);
+    localStorage.setItem("zeitdruck", zeitdruck? "true" : "false");
+    window.location.href = "/page1";
+  };
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div className="max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold mb-4">Willkommen zur Umfrage</h1>
+      <p className="mb-6">
+        Vielen Dank, dass du an dieser Studie teilnimmst. Ich möchte
+        herausfinden, wie nutzerfreundlich verschiedene Webseiten wahrgenommen
+        werden. Aber zu Beginn habe ich ein paar Fragen an dich. Bitte fülle
+        alles aus und klicke dann auf weiter!
+      </p>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <h2 className="text-lg font-bold mb-4">
+          Fragen zur Interaktion mit technischen Systemen:
+        </h2>
+
+        {questions.map((question, index) => (
+          <div key={index}>
+            <label className="block font-medium text-gray-700">
+              {question}
+            </label>
+            <Controller
+              name={`q1_${index + 1}` as keyof FormData}
+              control={control}
+              rules={{ required: "Dieses Feld ist erforderlich" }}
+              render={({ field }) => (
+                <select
+                  {...field}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="" disabled>
+                    Bitte auswählen
+                  </option>
+                  <option value={inverted[index] ? 6 : 1}>
+                    Stimmt gar nicht
+                  </option>
+                  <option value={inverted[index] ? 5 : 2}>
+                    Stimmt weitgehend nicht
+                  </option>
+                  <option value={inverted[index] ? 4 : 3}>
+                    Stimmt eher nicht
+                  </option>
+                  <option value={inverted[index] ? 3 : 4}>Stimmt eher</option>
+                  <option value={inverted[index] ? 2 : 5}>
+                    Stimmt weitgehend
+                  </option>
+                  <option value={inverted[index] ? 1 : 6}>Stimmt völlig</option>
+                </select>
+              )}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            {errors[`q1_${index + 1}` as keyof FormData] && (
+              <p className="text-red-500 text-sm">
+                {errors[`q1_${index + 1}` as keyof FormData]?.message}
+              </p>
+            )}
+          </div>
+        ))}
+
+        <h2 className="text-lg font-bold mb-4">Allgemeine Fragen:</h2>
+
+        <div>
+          <label className="block font-medium text-gray-700">Alter:</label>
+          <Controller
+            name="alter"
+            control={control}
+            rules={{
+              required: "Alter ist erforderlich",
+              min: { value: 18, message: "Mindestalter ist 18" },
+              max: { value: 99, message: "Höchstalter ist 99" },
+            }}
+            render={({ field }) => (
+              <input
+                type="number"
+                {...field}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              />
+            )}
+          />
+          {errors.alter && (
+            <p className="text-red-500 text-sm">{errors.alter.message}</p>
+          )}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+
+        {/* Geschlecht */}
+        <div>
+          <label className="block font-medium text-gray-700">Geschlecht:</label>
+          <Controller
+            name="geschlecht"
+            control={control}
+            rules={{ required: "Geschlecht ist erforderlich" }}
+            render={({ field }) => (
+              <select
+                {...field}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="" disabled>
+                  Bitte auswählen
+                </option>
+                <option value="Männlich">Männlich</option>
+                <option value="Weiblich">Weiblich</option>
+                <option value="Divers">Divers</option>
+              </select>
+            )}
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
+          {errors.geschlecht && (
+            <p className="text-red-500 text-sm">{errors.geschlecht.message}</p>
+          )}
+        </div>
+
+        {/* Technische Affinität */}
+        <div>
+          <label className="block font-medium text-gray-700">
+            Wie technisch affin würdest du dich selber einschätzen?
+          </label>
+          <Controller
+            name="technischeAffinitaet"
+            control={control}
+            rules={{ required: "Technische Affinität ist erforderlich" }}
+            render={({ field }) => (
+              <select
+                {...field}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="" disabled>
+                  Bitte auswählen
+                </option>
+                <option value="Niedrig">Niedrig</option>
+                <option value="Mittel">Mittel</option>
+                <option value="Hoch">Hoch</option>
+              </select>
+            )}
           />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
+          {errors.technischeAffinitaet && (
+            <p className="text-red-500 text-sm">
+              {errors.technischeAffinitaet.message}
+            </p>
+          )}
+        </div>
+
+        {/* Studiengang */}
+        <div>
+          <label className="block font-medium text-gray-700">
+            Studiengang:
+          </label>
+          <Controller
+            name="studiengang"
+            control={control}
+            rules={{ required: "Studiengang ist erforderlich" }}
+            render={({ field }) => (
+              <select
+                {...field}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option value="" disabled>
+                  Bitte auswählen
+                </option>
+                <option value="Technischer Studiengang">
+                  Technischer Studiengang
+                </option>
+                <option value="Sozialer Studiengang">
+                  Sozialer Studiengang
+                </option>
+                <option value="Kein Studium">Kein Studium</option>
+              </select>
+            )}
           />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          {errors.studiengang && (
+            <p className="text-red-500 text-sm">{errors.studiengang.message}</p>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={!isValid}
+          className={`w-full py-2 px-4 rounded-md text-white ${
+            isValid ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-400"
+          } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+        >
+          Weiter
+        </button>
+      </form>
     </div>
   );
-}
+};
+
+export default WelcomePage;
