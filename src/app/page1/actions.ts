@@ -3,6 +3,8 @@ import { Prisma } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
+//test 
+
 export async function update(params: Prisma.GeneralQUpdateInput, id: string) {
   try {
     await prisma.generalQ.update({
