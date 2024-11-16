@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { loadGeneral, updateCookie } from "./actions";
-import Image from "next/image";
 import { Prisma } from "@prisma/client";
 
 export default function Home() {
@@ -99,11 +98,12 @@ export default function Home() {
     });
   };
 
+  // eslint-disable-next-line
   const handleOptionChange = (event: any) => {
     const { name, checked } = event.target;
     setSelectedOptions((prev) => ({ ...prev, [name]: checked }));
   };
-
+  // eslint-disable-next-line
   const handleSurveyChange = (event: any) => {
     const { name, value } = event.target;
     setSurveyAnswers((prev) => ({ ...prev, [name]: value }));
@@ -151,8 +151,8 @@ export default function Home() {
 
       {/* Cookie-Banner */}
       {showBanner && (
-          <div className="bg-gray-100 w-3/4 h-1/3 fixed bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center rounded-lg shadow-lg border border-gray-400 z-50 p-4">
-        {showDetails ? (
+        <div className="bg-gray-100 w-3/4 h-1/3 fixed bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center justify-center rounded-lg shadow-lg border border-gray-400 z-50 p-4">
+          {showDetails ? (
             <>
               <h3 className="font-bold text-lg mb-4">
                 DATENSCHUTZ EINSTELLUNGEN

@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { loadGeneral, updateCookie } from "./actions";
-import Image from "next/image";
 import { Prisma } from "@prisma/client";
 
 export default function Home() {
@@ -12,12 +11,12 @@ export default function Home() {
   const [remainingTime, setRemainingTime] = useState(120 * 1000);
   const [isPageDimmed, setIsPageDimmed] = useState(false);
 
-   // REMOVE?
-   useEffect (() => {
+  // REMOVE?
+  useEffect(() => {
     const generalQID = localStorage.getItem("generalQID");
-    loadGeneral(generalQID!).then((data)=>{
-      setzeitDruck(data?.zeitdruck ?? false) //hier nimmt er aus localStorage den wert von zeitdruck
-    })
+    loadGeneral(generalQID!).then((data) => {
+      setzeitDruck(data?.zeitdruck ?? false); //hier nimmt er aus localStorage den wert von zeitdruck
+    });
   }, []);
 
   //CookieHandling auf jeder Page
@@ -99,16 +98,12 @@ export default function Home() {
     });
   };
 
+  // eslint-disable-next-line
   const handleOptionChange = (event: any) => {
     const { name, checked } = event.target;
     setSelectedOptions((prev) => ({ ...prev, [name]: checked }));
   };
-
-  const handleSaveSettings = () => {
-    console.log("Selected options:", selectedOptions);
-    setShowBanner(false);
-  };
-
+  // eslint-disable-next-line
   const handleSurveyChange = (event: any) => {
     const { name, value } = event.target;
     setSurveyAnswers((prev) => ({ ...prev, [name]: value }));
@@ -133,21 +128,23 @@ export default function Home() {
 
   return (
     <div className="w-screen h-screen relative flex">
-      
-      {zeitDruck && (<>{/* Ausgrau-Overlay nach Ablauf des Timers */}
-      {isPageDimmed && (
-        <div className="fixed inset-0 bg-gray-800 opacity-100 z-30 pointer-events-none"></div>
-      )}
+      {zeitDruck && (
+        <>
+          {/* Ausgrau-Overlay nach Ablauf des Timers */}
+          {isPageDimmed && (
+            <div className="fixed inset-0 bg-gray-800 opacity-100 z-30 pointer-events-none"></div>
+          )}
 
-      {/* Timer-Banner */}
-      <div className="bg-white w-80 h-auto fixed right-4 top-1/4 p-4 rounded-lg shadow-lg z-50">
-        <div className="text-2xl font-bold text-red-500 mb-4">
-          Zeit verbleibend:
-          <br />
-          {Math.floor(remainingTime / 1000)} Sekunden
-        </div>
-      </div></>)}
-      
+          {/* Timer-Banner */}
+          <div className="bg-white w-80 h-auto fixed right-4 top-1/4 p-4 rounded-lg shadow-lg z-50">
+            <div className="text-2xl font-bold text-red-500 mb-4">
+              Zeit verbleibend:
+              <br />
+              {Math.floor(remainingTime / 1000)} Sekunden
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Hintergrunddimmer für das Cookie-Banner */}
       {showBanner && <div className="fixed inset-0 bg-black opacity-50 z-40" />}

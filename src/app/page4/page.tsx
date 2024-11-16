@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { loadGeneral, updateCookie } from "./actions";
-import Image from "next/image";
 import { Prisma } from "@prisma/client";
 
 export default function Home() {
@@ -60,6 +59,7 @@ export default function Home() {
     }, 1500);
   }, []);
 
+  // eslint-disable-next-line
   const [selectedOptions, setSelectedOptions] = useState({
     essential: true,
     personalization: true,
@@ -99,16 +99,13 @@ export default function Home() {
     });
   };
 
-  const handleOptionChange = (event: any) => {
-    const { name, checked } = event.target;
-    setSelectedOptions((prev) => ({ ...prev, [name]: checked }));
-  };
-
+  // eslint-disable-next-line
   const handleSurveyChange = (event: any) => {
     const { name, value } = event.target;
     setSurveyAnswers((prev) => ({ ...prev, [name]: value }));
   };
 
+  // eslint-disable-next-line
   const handleSurveySubmit = async () => {
     if (
       !surveyAnswers.interfaceRating ||
@@ -173,7 +170,7 @@ export default function Home() {
                   className="text-white py-2 px-4 rounded-full transition duration-200"
                   style={{ backgroundColor: "rgb(210, 75, 75)" }}
                 >
-                 Bäää Cookies...
+                  Bäää Cookies...
                 </button>
               </div>
             </>

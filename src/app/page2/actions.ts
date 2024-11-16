@@ -1,5 +1,5 @@
 "use server";
-import { Cookies, CookieType, Prisma } from "@prisma/client";
+import { CookieType, Prisma } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 

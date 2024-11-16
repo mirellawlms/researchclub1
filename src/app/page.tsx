@@ -1,5 +1,4 @@
 "use client";
-import { log } from "console";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { mitZeitdruck, submit } from "./actions";
@@ -38,7 +37,6 @@ const WelcomePage = () => {
   const {
     control,
     handleSubmit,
-    watch,
     formState: { errors, isValid },
   } = useForm<FormData>({
     mode: "onChange", // Validate fields as user interacts

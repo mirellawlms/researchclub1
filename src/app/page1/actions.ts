@@ -1,5 +1,5 @@
 "use server";
-import { GeneralQ, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
