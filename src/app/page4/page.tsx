@@ -160,15 +160,14 @@ export default function Home() {
               <div className="flex items-center space-x-4">
                 <button
                   onClick={handleAccept}
-                  className="text-white py-2 px-4 rounded-full transition duration-200"
-                  style={{ backgroundColor: "rgb(210, 75, 75)" }}
+                  className="text-white py-2 px-4 rounded-full transition duration-200 bg-pink-500"
+                  
                 >
                   Doch, her damit 🍪🩷
                 </button>
                 <button
                   onClick={handleReject}
-                  className="text-white py-2 px-4 rounded-full transition duration-200"
-                  style={{ backgroundColor: "rgb(210, 75, 75)" }}
+                  className="text-white py-2 px-4 rounded-full transition duration-200 bg-pink-500"
                 >
                   Bäää Cookies...
                 </button>
