@@ -1,8 +1,10 @@
 "use client";
 import React from "react";
-import {Controller } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 
 const EndPage = () => {
+  const { control } = useForm(); // Nur `control` verwenden, ohne `handleSubmit`
+
   return (
     <div className="max-w-5xl mx-auto p-6 bg-gray-100 rounded-lg shadow-md">
       <h1 className="text-2xl font-bold mb-4">Finale Fragen</h1>
@@ -13,6 +15,7 @@ const EndPage = () => {
         </label>
         <Controller
           name="stressGefuehlt"
+          control={control}
           render={({ field }) => (
             <select
               {...field}
@@ -35,6 +38,7 @@ const EndPage = () => {
         </label>
         <Controller
           name="cookiesBeachtet"
+          control={control}
           render={({ field }) => (
             <select
               {...field}
@@ -57,6 +61,7 @@ const EndPage = () => {
         </label>
         <Controller
           name="datenschutzWichtig"
+          control={control}
           render={({ field }) => (
             <select
               {...field}
