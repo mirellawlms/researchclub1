@@ -16,6 +16,7 @@ const EndPage = () => {
         <Controller
           name="stressGefuehlt"
           control={control}
+          defaultValue=""
           render={({ field }) => (
             <select
               {...field}
@@ -38,6 +39,7 @@ const EndPage = () => {
         </label>
         <Controller
           name="cookiesBeachtet"
+          defaultValue=""
           control={control}
           render={({ field }) => (
             <select
@@ -62,6 +64,7 @@ const EndPage = () => {
         <Controller
           name="datenschutzWichtig"
           control={control}
+          defaultValue=""
           render={({ field }) => (
             <select
               {...field}
